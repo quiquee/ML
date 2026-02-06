@@ -26,7 +26,8 @@ This plan is based on your current interests and experience: hands-on work with 
   - Watch: Stanford CS234 Lecture 1 — RL Overview (Playlist: https://www.youtube.com/playlist?list=PLoROMvodv4rN4wG6Nk6sNpTEbuOSosZdX)
   - Read: Gymnasium docs — Environment basics (https://gymnasium.farama.org/tutorials/gymnasium_basics/)
 - Practice (1–2h):
-  - Implement a tiny Gridworld (or use `FrozenLake-v1`) with Gymnasium
+  - Implement a tiny Gridworld (or use `FrozenLake-v1`) with Gymnasium:
+    Actually starting to read the BlackJack environement and Q-learn (https://gymnasium.farama.org/introduction/train_agent/)
   - Interact with env using a random policy and log transitions
 - Test: See `tests.md` → Chapter 1
 
