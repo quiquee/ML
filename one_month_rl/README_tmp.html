@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>README.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="one-month-reinforcement-learning-path-tailored">One-Month Reinforcement Learning Path (Tailored)</h1>
+<p>This plan is based on your current interests and experience: hands-on work with Stable-Baselines3 (<code>PPO</code>, <code>MlpPolicy</code>), Gymnasium environments, TensorBoard, and a trading environment. It focuses on building solid RL fundamentals, deeply understanding PPO, structuring experiments, and applying them to a trading task. Progress is gated: you must pass each chapter’s multiple-choice test to continue (&gt;= 80%).</p>
+<h2 id="structure">Structure</h2>
+<ul>
+<li>Duration: 4 weeks</li>
+<li>Chapters: 8 (2 per week)w</li>
+<li>Each chapter: 1–2h theory, 1–2h practice, MCQ test</li>
+<li>Pass criterion: 8/10 correct in the corresponding test (see <code>tests.md</code>)</li>
+</ul>
+<h2 id="week-1--rl-foundations--tabular-methods">Week 1 — RL Foundations &amp; Tabular Methods</h2>
+<h3 id="chapter-1-core-rl-concepts--gymnasium-basics">Chapter 1: Core RL Concepts &amp; Gymnasium Basics</h3>
+<ul>
+<li>Description: Foundations of RL framed as decision-making under uncertainty; how Gymnasium formalizes environments; how SB3 interacts via rollouts.</li>
+<li>You will learn:
+<ul>
+<li>MDPs: states, actions, rewards, transitions, discounting</li>
+<li>Policies, value functions, Bellman equations (high-level)</li>
+<li>Gymnasium API: <code>Env</code>, observation and action spaces, steps, resets</li>
+<li>SB3 agent lifecycles at a glance</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Explain an MDP and why discounting matters</li>
+<li>Identify Gymnasium observation/action spaces for a simple env</li>
+<li>Describe how an RL algorithm collects rollouts</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: Spinning Up RL — Intro (https://spinningup.openai.com/en/latest/spinningup/rl_intro.html)</li>
+<li>Watch: Stanford CS234 Lecture 1 — RL Overview (Playlist: https://www.youtube.com/playlist?list=PLoROMvodv4rN4wG6Nk6sNpTEbuOSosZdX)</li>
+<li>Read: Gymnasium docs — Environment basics (https://gymnasium.farama.org/tutorials/gymnasium_basics/)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Implement a tiny Gridworld (or use <code>FrozenLake-v1</code>) with Gymnasium</li>
+<li>Interact with env using a random policy and log transitions</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 1</li>
+</ul>
+<h3 id="chapter-2-tabular-rl--dp-mc-td-q-learning-sarsa">Chapter 2: Tabular RL — DP, MC, TD, Q-Learning, SARSA</h3>
+<ul>
+<li>Description: Classic algorithms to build intuition before deep RL.</li>
+<li>You will learn:
+<ul>
+<li>Policy evaluation/improvement, Monte Carlo vs TD learning</li>
+<li>Q-learning vs SARSA; on/off-policy distinctions</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Implement and tune tabular Q-learning</li>
+<li>Explain difference between MC and TD methods</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: Sutton &amp; Barto (ch. 4–6) — Official book (http://incompleteideas.net/book/RLbook2020.pdf)</li>
+<li>Watch: CS234 — Tabular methods segment (Playlist: https://www.youtube.com/playlist?list=PLoROMvodv4rN4wG6Nk6sNpTEbuOSosZdX)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Train tabular Q-learning on <code>FrozenLake-v1</code> with slippery vs non-slippery</li>
+<li>Plot learning curves; compare SARSA vs Q-learning</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 2</li>
+</ul>
+<h2 id="week-2--policy-gradients--sb3ppo-internals">Week 2 — Policy Gradients &amp; SB3/PPO Internals</h2>
+<h3 id="chapter-3-policy-gradient-basics-reinforce">Chapter 3: Policy Gradient Basics (REINFORCE)</h3>
+<ul>
+<li>Description: Move from value-based methods to optimizing policies directly.</li>
+<li>You will learn:
+<ul>
+<li>REINFORCE objective, gradients via log-prob, variance reduction</li>
+<li>Advantage intuition leading to GAE (prelude to PPO)</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Implement a simple REINFORCE agent (PyTorch) on <code>CartPole-v1</code></li>
+<li>Explain why baselines reduce variance</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: Spinning Up — Policy Gradient (VPG) (https://spinningup.openai.com/en/latest/algorithms/vpg.html)</li>
+<li>Watch: CS234 — Policy Gradient segment (Playlist: https://www.youtube.com/playlist?list=PLoROMvodv4rN4wG6Nk6sNpTEbuOSosZdX)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Train REINFORCE; add baseline; compare returns and variance</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 3</li>
+</ul>
+<h3 id="chapter-4-stable-baselines3--gymnasium-stack-deep-dive">Chapter 4: Stable-Baselines3 + Gymnasium Stack Deep Dive</h3>
+<ul>
+<li>Description: Understand SB3’s training loop and how PPO integrates with <code>MlpPolicy</code>.</li>
+<li>You will learn:
+<ul>
+<li>PPO rollouts, advantages (GAE), clipping, value/entropy losses</li>
+<li>Key hyperparameters: <code>n_steps</code>, <code>batch_size</code>, <code>gamma</code>, <code>gae_lambda</code>, <code>clip_range</code>, <code>vf_coef</code>, <code>ent_coef</code>, <code>learning_rate</code></li>
+<li>Callbacks, logging, evaluation APIs; TensorBoard interpretation (entropy, value loss, explained variance)</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Configure PPO agents for <code>CartPole-v1</code> and <code>LunarLander-v2</code></li>
+<li>Interpret TensorBoard metrics and diagnose instability</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: SB3 PPO docs (https://stable-baselines3.readthedocs.io/en/master/modules/ppo.html#mlppolicy)</li>
+<li>Watch: Johnny Code — Getting Started with SB3 (https://www.youtube.com/watch?v=OqvXHi_QtT0) and Custom Gymnasium Env + Q-Learning/SB3 (https://www.youtube.com/watch?v=AoGRjPt-vms)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Train PPO with 2 configs; log with TensorBoard; write a callback to record episode rewards</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 4</li>
+</ul>
+<h2 id="week-3--custom-environments--ppo-tuning">Week 3 — Custom Environments &amp; PPO Tuning</h2>
+<h3 id="chapter-5-custom-gymnasium-environment--trading-focus">Chapter 5: Custom Gymnasium Environment — Trading Focus</h3>
+<ul>
+<li>Description: Build a minimal trading env that matches your EUR/BTC interest.</li>
+<li>You will learn:
+<ul>
+<li>Specifying observation/action spaces for trading</li>
+<li>Reward shaping pitfalls; episode termination; data handling</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Implement <code>gymnasium.Env</code> with <code>reset</code>/<code>step</code> for synthetic price series</li>
+<li>Log trades, rewards, and positions per step</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: Gymnasium — Creating Custom Envs (https://gymnasium.farama.org/tutorials/gymnasium_basics/environment_creation/)</li>
+<li>Review: RL reward shaping tips (SB3 Tips &amp; Tricks: https://stable-baselines3.readthedocs.io/en/stable/guide/rl_tips.html)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Implement env; run random policy; sanity-check reward distribution</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 5</li>
+</ul>
+<h3 id="chapter-6-ppo-hyperparameters-gae-and-stability">Chapter 6: PPO Hyperparameters, GAE, and Stability</h3>
+<ul>
+<li>Description: Practical PPO tuning and common pitfalls.</li>
+<li>You will learn:
+<ul>
+<li>GAE intuition; bias-variance tradeoff with <code>gae_lambda</code></li>
+<li>PPO clipping and its effect on updates; normalization; time limits</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Execute a small hyperparameter sweep on your trading/env or <code>LunarLander-v2</code></li>
+<li>Diagnose failures via logs; apply normalization and reward scaling</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: PPO paper (https://arxiv.org/abs/1707.06347) &amp; Spinning Up — PPO (https://spinningup.openai.com/en/latest/algorithms/ppo.html)</li>
+<li>Read: SB3 best practices (https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Sweep <code>clip_range</code>, <code>n_steps</code>, <code>gae_lambda</code>; compare mean returns and stability</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 6</li>
+</ul>
+<h2 id="week-4--experiment-design-evaluation-and-capstone">Week 4 — Experiment Design, Evaluation, and Capstone</h2>
+<h3 id="chapter-7-reproducibility-evaluation-and-experiment-tracking">Chapter 7: Reproducibility, Evaluation, and Experiment Tracking</h3>
+<ul>
+<li>Description: Make experiments reliable and comparable.</li>
+<li>You will learn:
+<ul>
+<li>Seeding, evaluation protocols, off-policy evaluation caveats</li>
+<li>Tools: <code>evaluate_policy</code>, <code>Monitor</code>, TensorBoard; optional: Weights &amp; Biases</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Establish a standard experiment template with config + seed list</li>
+<li>Produce reproducible plots and tables</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: Reproducibility in RL — SB3 (https://stable-baselines3.readthedocs.io/en/master/guide/rl_tips.html#reproducibility)</li>
+<li>Review: SB3 evaluation utilities (https://stable-baselines3.readthedocs.io/en/master/common/evaluation.html)</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Run 3 seeds × 2 configs; aggregate returns; compute confidence intervals</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 7</li>
+</ul>
+<h3 id="chapter-8-capstone--eurbtc-trading-agent">Chapter 8: Capstone — EUR/BTC Trading Agent</h3>
+<ul>
+<li>Description: Integrate everything into a documented, reproducible pipeline.</li>
+<li>You will learn:
+<ul>
+<li>Data prep for crypto; risk metrics (max drawdown, Sharpe)</li>
+<li>Baselines vs PPO policy comparison; generalization cautions</li>
+</ul>
+</li>
+<li>Objectives:
+<ul>
+<li>Train PPO on your env with clear logs, checkpoints, and metrics</li>
+<li>Compare vs a simple baseline (e.g., buy-and-hold or rule-based)</li>
+</ul>
+</li>
+<li>Theory (1–2h):
+<ul>
+<li>Read: Trading evaluation metrics — Max Drawdown (https://en.wikipedia.org/wiki/Drawdown_(economics)), Sharpe Ratio (https://en.wikipedia.org/wiki/Sharpe_ratio)</li>
+<li>Review: prior chapters’ notes</li>
+</ul>
+</li>
+<li>Practice (1–2h):
+<ul>
+<li>Full run + report: setup, configs, training curves, evaluation, conclusions</li>
+</ul>
+</li>
+<li>Test: See <code>tests.md</code> → Chapter 8</li>
+</ul>
+<h2 id="gating--schedule">Gating &amp; Schedule</h2>
+<ul>
+<li>Gate: Proceed only if you score ≥ 8/10 in the chapter test.</li>
+<li>Remediation: If you fail, revisit the theory links, re-run practice with smaller scope, and retake.</li>
+<li>Suggested cadence:
+<ul>
+<li>Mon/Tue: Chapters 1–2</li>
+<li>Wed/Thu: Chapters 3–4</li>
+<li>Fri: Chapter 5</li>
+<li>Mon: Chapter 6</li>
+<li>Tue/Wed: Chapter 7</li>
+<li>Thu/Fri: Chapter 8 + capstone write-up</li>
+</ul>
+</li>
+</ul>
+<h2 id="resources">Resources</h2>
+<ul>
+<li>Spinning Up RL by OpenAI (Policy Gradient, PPO, Key Concepts)</li>
+<li>Stable-Baselines3 Docs (PPO, Policies, Callbacks, Logging)</li>
+<li>Gymnasium Docs (Envs, Spaces, Custom Envs)</li>
+<li>CS234 Lectures (Emma Brunskill) — selected segments</li>
+<li>Johnny Code videos — SB3 + Gymnasium</li>
+</ul>
+<h2 id="deliverables">Deliverables</h2>
+<ul>
+<li>Practice artifacts: code, logs, TensorBoard screenshots</li>
+<li>Tests: answers tracked; gating enforced</li>
+<li>Capstone report: assumptions, configs, results, evaluation, next steps</li>
+</ul>
+<p>See tests: <code>tests.md</code>
+See practice checklists: <code>practice_checklists.md</code></p>
+
+</body>
+</html>

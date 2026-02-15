@@ -15,8 +15,8 @@
             align-items: center;
         }
         .container {
-            width: 90%;
-            max-width: 1200px;
+            width: 95%;
+            max-width: 1400px;
         }
         h1, h2, h3 {
             color: #f0f0f0;
@@ -53,21 +53,23 @@
         }
         .charts {
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
             margin-bottom: 20px;
         }
         .chart-container {
             background-color: #2a2a2a;
-            padding: 20px;
+            padding: 16px;
             border-radius: 8px;
-            flex: 1;
-            height: 30vh; /* Set height relative to viewport height */
+            flex: 1 1 320px;
+            min-width: 280px;
+            height: clamp(220px, 32vh, 360px);
             display: flex;
             flex-direction: column;
         }
         canvas {
             width: 100%;
-            height: 100%; /* Fill container height */
+            height: 100%;
             border-radius: 4px;
         }
         .info-tables {
@@ -81,16 +83,44 @@
             border-radius: 8px;
             flex: 1;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
+        #summary-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            width: 100%;
         }
-        li {
-            padding: 5px 0;
-            border-bottom: 1px solid #333;
+        #summary-container,
+        #summary-chart-container {
+            flex: 1 1 360px;
+            min-width: 320px;
         }
-        li:last-child {
-            border-bottom: none;
+        #summary-chart-container {
+            height: clamp(240px, 35vh, 420px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 4px;
+            text-align: left;
+            border-bottom: 1px solid #444;
+            font-size: 12px;
+        }
+        th {
+            color: #f0f0f0;
+        }
+        @media (max-width: 900px) {
+            .controls {
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+            .chart-container {
+                height: 260px;
+            }
+            #summary-section {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -118,14 +148,25 @@
             </div>
         </div>
 
-        <div class="charts">
-            <div class="chart-container">
-                <h2>True Asset Potential</h2>
-                <canvas id="trueValuesChart"></canvas>
+        <div id="summary-section">
+            <div class="info-box" id="summary-container">
+                <h2 id="summary-title">Summary</h2>
+                <table id="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>True Potential</th>
+                            <th>Estimated Potential</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be inserted here by JS -->
+                    </tbody>
+                </table>
             </div>
-            <div class="chart-container">
-                <h2>Estimated Asset Value (Q-values)</h2>
-                <canvas id="qValuesChart"></canvas>
+            <div class="info-box" id="summary-chart-container">
+                <h2>Potential Comparison</h2>
+                <canvas id="summaryChart"></canvas>
             </div>
         </div>
     </div>
@@ -135,15 +176,18 @@
     const ctx = canvas.getContext('2d');
     const actionCanvas = document.getElementById('actionChart');
     const actionCtx = actionCanvas.getContext('2d');
-    const trueValuesCanvas = document.getElementById('trueValuesChart');
-    const trueValuesCtx = trueValuesCanvas.getContext('2d');
-    const qValuesCanvas = document.getElementById('qValuesChart');
-    const qValuesCtx = qValuesCanvas.getContext('2d');
+    const summaryChartCanvas = document.getElementById('summaryChart');
+    const summaryChartCtx = summaryChartCanvas.getContext('2d');
     const startButton = document.getElementById('startButton');
     const epsilonInput = document.getElementById('epsilon');
     const epsilonValueSpan = document.getElementById('epsilon-value');
     const avgTrueRewardDiv = document.getElementById('avg-true-reward');
     const regenerateButton = document.getElementById('regenerateButton');
+    const summaryTableBody = document.querySelector('#summary-table tbody');
+    const summaryTitle = document.getElementById('summary-title');
+
+    const nasdaqTickers = ["AAPL", "MSFT", "AMZN", "GOOGL", "META", "TSLA", "NVDA", "JPM", "JNJ", "V", "PG", "MA", "INTC", "UNH", "HD", "PYPL", "DIS", "NFLX", "ADBE", "CMCSA", "PEP", "CSCO", "PFE", "XOM", "T", "BAC", "WMT", "KO", "ABT", "MCD"];
+    let chosenTickers = [];
 
     epsilonInput.addEventListener('input', () => {
         epsilonValueSpan.textContent = parseFloat(epsilonInput.value).toFixed(2);
@@ -156,14 +200,45 @@
         return x - Math.floor(x);
     }
 
+    function chooseTickers() {
+        // We need a separate random generator for tickers so it doesn't affect the true value generation
+        let tickerSeed = seed;
+        const tickerRandom = () => {
+            const x = Math.sin(tickerSeed++) * 10000;
+            return x - Math.floor(x);
+        };
+        const shuffled = [...nasdaqTickers].sort(() => 0.5 - tickerRandom());
+        chosenTickers = shuffled.slice(0, k);
+    }
+
+    function drawTickerLabel(context, text, x, y) {
+        context.save();
+        context.translate(x, y);
+        context.rotate(-Math.PI / 4);
+        context.textAlign = 'right';
+        context.textBaseline = 'middle';
+        context.fillText(text, 0, 0);
+        context.restore();
+    }
+
     // 1. Setup the "Secret" Bandit Arms (Normal distributions)
     const k = 10;
     let trueValues = [];
     let bestArm;
 
-    function generateTrueValues() {
-        seed = 1; // Reset seed for deterministic generation
-        trueValues = Array.from({length: k}, () => seededRandom() * 2); // Random true values [0, 2]
+    function generateTrueValues(useRandomSeed = false) {
+        if (useRandomSeed) {
+            seed = Math.floor(Math.random() * 1000) + 1; // New random small integer seed
+        } else {
+            seed = 1; // Reset seed for deterministic generation
+        }
+        // Important: Re-seed the PRNG for generating values so it's consistent
+        let valueSeed = seed;
+        const valueRandom = () => {
+            const x = Math.sin(valueSeed++) * 10000;
+            return x - Math.floor(x);
+        };
+        trueValues = Array.from({length: k}, () => valueRandom() * 2); // Random true values [0, 2]
         bestArm = trueValues.indexOf(Math.max(...trueValues));
     }
 
@@ -177,8 +252,9 @@
     let running = false;
     let simulationInterval = null;
 
-    function setupAssets() {
-        generateTrueValues();
+    function setupAssets(useRandomSeed = false) {
+        generateTrueValues(useRandomSeed);
+        chooseTickers();
         // Reset state
         if (simulationInterval) clearInterval(simulationInterval);
         running = false;
@@ -214,7 +290,7 @@
 
     regenerateButton.addEventListener('click', (e) => {
         e.target.blur();
-        setupAssets();
+        setupAssets(true); // Use a random seed
     });
 
     function runStep() {
@@ -252,8 +328,8 @@
     function draw() {
         drawRewardChart();
         drawActionChart();
-        drawTrueValuesChart();
-        drawQValuesChart();
+        updateSummaryTable();
+        drawSummaryChart();
     }
 
     function drawRewardChart() {
@@ -291,42 +367,60 @@
         actionCtx.clearRect(0, 0, actionCanvas.width, actionCanvas.height);
         const barWidth = actionCanvas.width / k;
         const maxPulls = Math.max(...N, 1);
+        const labelArea = 28;
+        const plotHeight = actionCanvas.height - labelArea;
+        actionCtx.font = "10px Arial";
 
         N.forEach((count, i) => {
-            const barHeight = (count / maxPulls) * actionCanvas.height;
+            const barHeight = (count / maxPulls) * plotHeight;
+            const x = i * barWidth;
+            const width = barWidth - 6;
             actionCtx.fillStyle = `hsl(${(i / k) * 360}, 70%, 50%)`;
-            actionCtx.fillRect(i * barWidth, actionCanvas.height - barHeight, barWidth - 5, barHeight);
+            actionCtx.fillRect(x, plotHeight - barHeight, width, barHeight);
             actionCtx.fillStyle = "#e0e0e0";
-            actionCtx.fillText(`Asset ${i+1}`, i * barWidth, actionCanvas.height - barHeight - 5);
+            drawTickerLabel(actionCtx, chosenTickers[i], x + width / 2, plotHeight + labelArea - 4);
         });
     }
 
-    function drawTrueValuesChart() {
-        trueValuesCtx.clearRect(0, 0, trueValuesCanvas.width, trueValuesCanvas.height);
-        const barWidth = trueValuesCanvas.width / k;
-        const maxValue = 2; // Max possible true value
-
-        trueValues.forEach((value, i) => {
-            const barHeight = (value / maxValue) * trueValuesCanvas.height;
-            trueValuesCtx.fillStyle = `hsl(${(i / k) * 360}, 70%, 50%)`;
-            trueValuesCtx.fillRect(i * barWidth, trueValuesCanvas.height - barHeight, barWidth - 5, barHeight);
-            trueValuesCtx.fillStyle = "#e0e0e0";
-            trueValuesCtx.fillText(value.toFixed(2), i * barWidth, trueValuesCanvas.height - barHeight - 5);
-        });
+    function updateSummaryTable() {
+        summaryTitle.textContent = `Summary (Seed: ${seed})`;
+        summaryTableBody.innerHTML = ''; // Clear existing rows
+        for (let i = 0; i < k; i++) {
+            const row = `
+                <tr>
+                    <td>${chosenTickers[i]}</td>
+                    <td>${trueValues[i].toFixed(3)}</td>
+                    <td>${Q[i].toFixed(3)}</td>
+                </tr>
+            `;
+            summaryTableBody.innerHTML += row;
+        }
     }
 
-    function drawQValuesChart() {
-        qValuesCtx.clearRect(0, 0, qValuesCanvas.width, qValuesCanvas.height);
-        const barWidth = qValuesCanvas.width / k;
-        const maxValue = Math.max(...Q, ...trueValues, 1); // Dynamic max value for better scaling
+    function drawSummaryChart() {
+        summaryChartCtx.clearRect(0, 0, summaryChartCanvas.width, summaryChartCanvas.height);
+        const groupWidth = summaryChartCanvas.width / k;
+        const barWidth = Math.max(6, (groupWidth - 8) / 2);
+        const labelArea = 32;
+        const paddingTop = 10;
+        const plotHeight = summaryChartCanvas.height - labelArea - paddingTop;
+        const maxValue = Math.max(...trueValues, ...Q, 1);
+        summaryChartCtx.font = "10px Arial";
 
-        Q.forEach((value, i) => {
-            const barHeight = (value / maxValue) * qValuesCanvas.height;
-            qValuesCtx.fillStyle = `hsl(${(i / k) * 360}, 70%, 50%)`;
-            qValuesCtx.fillRect(i * barWidth, qValuesCanvas.height - barHeight, barWidth - 5, barHeight);
-            qValuesCtx.fillStyle = "#e0e0e0";
-            qValuesCtx.fillText(value.toFixed(2), i * barWidth, qValuesCanvas.height - barHeight - 5);
-        });
+        for (let i = 0; i < k; i++) {
+            const groupX = i * groupWidth + 4;
+            const trueHeight = (trueValues[i] / maxValue) * plotHeight;
+            const qHeight = (Q[i] / maxValue) * plotHeight;
+
+            summaryChartCtx.fillStyle = 'rgba(46, 204, 113, 0.7)';
+            summaryChartCtx.fillRect(groupX, paddingTop + (plotHeight - trueHeight), barWidth, trueHeight);
+
+            summaryChartCtx.fillStyle = 'rgba(52, 152, 219, 0.85)';
+            summaryChartCtx.fillRect(groupX + barWidth + 4, paddingTop + (plotHeight - qHeight), barWidth, qHeight);
+
+            summaryChartCtx.fillStyle = "#e0e0e0";
+            drawTickerLabel(summaryChartCtx, chosenTickers[i], groupX + barWidth, paddingTop + plotHeight + labelArea - 6);
+        }
     }
     
     setupAssets(); // Initial setup
