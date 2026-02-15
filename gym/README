@@ -1,0 +1,5 @@
+Created from ML directory using;
+
+copier copy https://github.com/Farama-Foundation/gymnasium-env-template.git gym/
+
+Copier was installed using pipx
