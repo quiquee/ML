@@ -367,7 +367,7 @@
         actionCtx.clearRect(0, 0, actionCanvas.width, actionCanvas.height);
         const barWidth = actionCanvas.width / k;
         const maxPulls = Math.max(...N, 1);
-        const labelArea = 28;
+        const labelArea = 60;
         const plotHeight = actionCanvas.height - labelArea;
         actionCtx.font = "10px Arial";
 
@@ -401,7 +401,7 @@
         summaryChartCtx.clearRect(0, 0, summaryChartCanvas.width, summaryChartCanvas.height);
         const groupWidth = summaryChartCanvas.width / k;
         const barWidth = Math.max(6, (groupWidth - 8) / 2);
-        const labelArea = 32;
+        const labelArea = 60;
         const paddingTop = 10;
         const plotHeight = summaryChartCanvas.height - labelArea - paddingTop;
         const maxValue = Math.max(...trueValues, ...Q, 1);
